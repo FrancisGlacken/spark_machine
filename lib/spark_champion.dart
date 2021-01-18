@@ -1,32 +1,33 @@
 import 'dart:math';
 
-import 'package:flame/components/animation_component.dart';
-import 'package:flame/animation.dart';
 import 'package:flame/components/joystick/joystick_component.dart';
 import 'package:flame/components/joystick/joystick_events.dart';
+import 'package:flame/components/sprite_animation_component.dart';
+import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math_64.dart';
+import 'package:flame/sprite_animation.dart';
 
-class SparkChampion extends AnimationComponent implements JoystickListener {
-  double speedX, speedY = 0; 
+class SparkChampion extends SpriteAnimationComponent implements JoystickListener {
+  final double speed = 159;
   double radAngle = 0;
   bool _move = false;
+  double currentSpeed = 0;
+  Rect _rect;
 
-  SparkChampion(double x, double y)
-      : super(
-            40,
-            40,
-            Animation.sequenced("spark_champion_sheet.png", 7,
-                stepTime: .2, textureWidth: 32, textureHeight: 32)) {
-    this.x = x;
-    this.y = y;
+  SparkChampion(Vector2 size, SpriteAnimation animation) : super(size, animation);
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    if (_move) {
+      moveFromAngle(dt);  
+    }
   }
 
   @override
-  void update(double t) {
-    super.update(t);
-    if (_move) {
-      x = x - speedX; 
-      y = y - speedY; 
-    }
+  void onGameResize(Vector2 size) {
+    _rect = animation.currentFrame.sprite.src; 
+    super.onGameResize(size);
   }
 
   @override
@@ -45,25 +46,26 @@ class SparkChampion extends AnimationComponent implements JoystickListener {
   void joystickChangeDirectional(JoystickDirectionalEvent event) {
     _move = event.directional != JoystickMoveDirectional.IDLE;
     if (_move) {
-      switch (event.directional) {
-        case JoystickMoveDirectional.MOVE_UP: speedX = 0; speedY = 1 * event.intensity; 
-          break;
-        case JoystickMoveDirectional.MOVE_UP_LEFT: speedX = .5 * event.intensity; speedY = .5 * event.intensity; 
-          break;
-        case JoystickMoveDirectional.MOVE_LEFT: speedX = 1 * event.intensity; speedY = 0; 
-          break;
-        case JoystickMoveDirectional.MOVE_DOWN_LEFT: speedX = .5 * event.intensity; speedY = -.5 * event.intensity; 
-          break;
-        case JoystickMoveDirectional.MOVE_DOWN: speedX = 0; speedY = -1 * event.intensity; 
-          break;
-        case JoystickMoveDirectional.MOVE_DOWN_RIGHT: speedX = -.5 * event.intensity; speedY = -.5 * event.intensity; 
-          break;
-        case JoystickMoveDirectional.MOVE_RIGHT: speedX = -1 * event.intensity; speedY = 0; 
-          break;
-        case JoystickMoveDirectional.MOVE_UP_RIGHT: speedX = -.5 * event.intensity; speedY = .5 * event.intensity; 
-          break;
-        default: speedX = 0; speedY = 0; 
-      }
+      radAngle = event.radAngle;
+      currentSpeed = speed * event.intensity;
     }
+  }
+
+  void moveFromAngle(double dtUpdate) {
+    final double nextX = (currentSpeed * dtUpdate) * cos(radAngle);
+    final double nextY = (currentSpeed * dtUpdate) * sin(radAngle);
+
+    if (_rect == null) {
+      return;
+    }
+
+    final Offset diffBase = Offset(
+          _rect.center.dx + nextX,
+          _rect.center.dy + nextY,
+        ) -
+        _rect.center;
+        
+    this.x = this.x + diffBase.dx; 
+    this.y = this.y + diffBase.dy; 
   }
 }

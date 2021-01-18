@@ -1,15 +1,11 @@
-import 'package:flame/components/animation_component.dart';
-import 'package:flame/animation.dart';
+import 'package:flame/components/sprite_animation_component.dart';
+import 'package:flame/sprite_animation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:vector_math/vector_math_64.dart';
 
+class JellyFish extends SpriteAnimationComponent {
+  JellyFish(Vector2 size, SpriteAnimation animation) : super(size, animation);
 
-class JellyFish extends AnimationComponent {
-  JellyFish(double x, double y) : super(24, 24, 
-      Animation.sequenced("sprite_sheet_jellyfish.png", 10, textureWidth: 16, textureHeight: 16)){
-        
-      this.x = x;
-      this.y = y;
-  }
 
   @override
   void update(double t) {
