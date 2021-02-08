@@ -24,8 +24,10 @@ dependencies:
   flutter:
     sdk: flutter
   
-  flame: ^1.0.0-rc5
+  flame: ^1.0.0-rc6
   flutter_grid_button: ^1.1.8
+  provider: ^4.0.0
+
 
 
 

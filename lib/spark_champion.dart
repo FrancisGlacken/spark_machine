@@ -1,11 +1,8 @@
 import 'dart:math';
-
-import 'package:flame/components/joystick/joystick_component.dart';
-import 'package:flame/components/joystick/joystick_events.dart';
-import 'package:flame/components/sprite_animation_component.dart';
+import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart';
-import 'package:flame/sprite_animation.dart';
+
 
 class SparkChampion extends SpriteAnimationComponent implements JoystickListener {
   final double speed = 159;
@@ -14,11 +11,12 @@ class SparkChampion extends SpriteAnimationComponent implements JoystickListener
   double currentSpeed = 0;
   Rect _rect;
 
-  SparkChampion(Vector2 size, SpriteAnimation animation) : super(size, animation);
+  SparkChampion.fromSpriteAnimation(size, animation) : super.fromSpriteAnimation(size, animation); 
 
   @override
   void update(double dt) {
     super.update(dt);
+  
     if (_move) {
       moveFromAngle(dt);  
     }
