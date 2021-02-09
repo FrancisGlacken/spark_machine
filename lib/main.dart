@@ -2,6 +2,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/widgets.dart';
+import 'package:flame_forge2d/forge2d_game.dart';
 import 'package:flutter/services.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart' hide Image;
@@ -28,7 +29,7 @@ void main() async {
   ));
 }
 
-class SparkGame extends BaseGame with MultiTouchDragDetector {
+class SparkGame extends Forge2DGame with MultiTouchDragDetector {
   var personmanAnim;
   SparkChampion championComponent;
   JellyFish jellyfish;
@@ -76,8 +77,8 @@ class SparkGame extends BaseGame with MultiTouchDragDetector {
         ));
 
     championComponent = SparkChampion.fromSpriteAnimation(spriteSize, championAnim);
-    championComponent.x = size.x / 2 - spriteSize.x;
-    championComponent.y = spriteSize.y;
+    championComponent.x = size.x - championComponent.size.x; 
+    championComponent.y = championComponent.size.y;
 
     joystick = JoystickComponent(
       directional: JoystickDirectional(
@@ -86,7 +87,7 @@ class SparkGame extends BaseGame with MultiTouchDragDetector {
 
     final forestComponent = ForestSpark.fromSpriteAnimation(spriteSize, forestAnim);
     forestComponent.x = size.x / 2 - spriteSize.x;
-    forestComponent.y = size.y - 40;
+    forestComponent.y = size.y - forestComponent.size.y;
 
     jellyfish = JellyFish.fromSpriteAnimation(Vector2.all(32), jellyfishAnim);
     bgComponent = SpriteComponent.fromImage(Vector2(size.x, size.y), bgImage);
